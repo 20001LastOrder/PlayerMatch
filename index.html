@@ -3,10 +3,89 @@
 	<title>Cool</title>
 </head>
 <body>
-	First name: <input type="text" name="FirstName" value="Mickey"><br>
-	Last name: <input type="text" name="LastName" value="Mouse"><br>
-	<input type="submit" value="Submit">
-
+	Age: <input type="text" id="Age" value="29"><br>
+    Height: <input type="text" id="Height" value="221"><br>
+	Weight: <input type="text" id="Weight" value="80"><br>
+	Birthday: <input type="text" id="Birthday" value="1990-05-20"><br>
+	<button onclick = "execute()"> go </button>
+	<p id = "Name"></p>
 	</form>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script type="text/javascript"charset="utf-8">
+var loadedData;
+var imageOnDisplay;
+var age,height,weight,birthday, overall,value;
+window.onload = function(){
+   d3.csv("complete.csv", function(data) {
+   		loadedData = data;
+			
+   });
+  };
+var execute = function(){
+	age = parseInt(document.getElementById("Age").value);
+	height = parseInt(document.getElementById("Height").value);
+	weight = parseInt(document.getElementById("Weight").value);
+	birthday = parseInt(document.getElementById("Birthday").value.slice(5,7));
+	//console.log(birthday)
+    overall = AWHBToOverall(age,weight,height,birthday);
+    value = OverallToValue(overall);
+    mathching();
+};
+function mathching(){
+	var listOfPlayers = [];
+	for(i = 0; i < loadedData.length; i++){
+		//console.log(loadedData[i].eur_value);
+		if(loadedData[i].eur_value > value - 2000000 && loadedData[i].eur_value < value + 2000000){
+			listOfPlayers[listOfPlayers.length] = loadedData[i];
+			//console.log(loadedData[i].eur_value);
+		} 
+		if(loadedData[i].eur_value < value){
+			listOfPlayers[listOfPlayers.length] = loadedData[i];
+			break;
+		}	
+	}
+	var index = parseInt(Math.random()*(listOfPlayers.length));
+	console.log(listOfPlayers.length)
+	document.getElementById("Name").innerHTML = "Name: " + listOfPlayers[index].name;
+	if(imageOnDisplay){
+		removeImage(imageOnDisplay);
+	}
+	show_image(listOfPlayers[index].photo,50,50,listOfPlayers[index].name);
+	
+}
+
+	function show_image(src, width, height, alt) {
+
+var img = document.createElement("img");
+		img.src = src;
+		img.width = width;
+		img.height = height;
+	img.alt = alt;
+	imageOnDisplay = img;
+// This next line will just add it to the <body> tag
+	  	document.body.appendChild(img);
+
+}
+
+function removeImage(img){
+	document.body.removeChild(img);
+}
+
+function OverallToValue(overall){
+	var value=Math.exp(-0.00007875 * Math.pow(overall,3) + 0.01771 * Math.pow(overall,2) - 1.108 * overall + 32.11);
+	value = parseInt(value/100000) * 100000; //get the whole number in million
+	console.log(value);
+	return value;
+}
+
+function AWHBToOverall(A, W, H, B){
+	var overall = 55.1946 + 0.6732*A -0.0525*H + 0.0765	*W -0.0174*B;
+	console.log(parseInt(overall));
+	return parseInt(overall);
+
+}
+
+
+</script>
 </body>
 </html>

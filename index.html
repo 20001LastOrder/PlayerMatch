@@ -8,6 +8,7 @@
 	Weight: <input type="text" id="Weight" value="80"><br>
 	Birthday: <input type="text" id="Birthday" value="1990-05-20"><br>
 	<button onclick = "execute()"> go </button>
+	<p> Your Potential Module Of Player</p>
 	<p id = "Name"></p>
 	</form>
 <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -33,6 +34,9 @@ var execute = function(){
 };
 function mathching(){
 	var listOfPlayers = [];
+	if(imageOnDisplay){
+		removeImage(imageOnDisplay);
+	}
 	for(i = 0; i < loadedData.length; i++){
 		//console.log(loadedData[i].eur_value);
 		if(loadedData[i].eur_value > value - 2000000 && loadedData[i].eur_value < value + 2000000){
@@ -47,9 +51,7 @@ function mathching(){
 	var index = parseInt(Math.random()*(listOfPlayers.length));
 	console.log(listOfPlayers.length)
 	document.getElementById("Name").innerHTML = "Name: " + listOfPlayers[index].name;
-	if(imageOnDisplay){
-		removeImage(imageOnDisplay);
-	}
+	
 	show_image(listOfPlayers[index].photo,50,50,listOfPlayers[index].name);
 	
 }
